@@ -1,0 +1,101 @@
+use jpa2021;
+
+drop table if exists `authorities`;
+drop table if exists `users`;
+drop table if exists `kosze`;
+drop table if exists `autorzy`;
+drop table if exists `autorzy_to_ksiazki`;
+drop table if exists `kategorie`;
+drop table if exists `ksiazki`;
+
+CREATE TABLE `autorzy` (
+`id` int not null auto_increment primary key,
+`imie` varchar(30) default null,
+`nazwisko` varchar(40) default null
+);
+
+CREATE TABLE `kategorie` (
+`id` int not null auto_increment primary key,
+`nazwa` varchar(40) not null);
+
+CREATE TABLE `kosze` (
+`id` int not null auto_increment primary key);
+
+CREATE TABLE `ksiazki` (
+`id` int not null auto_increment primary key,
+`nazwa` varchar(40) default null,
+`wydawnictwo` varchar(40) default null,
+`cena` float default null,
+`kategoria_id` int default null,
+`kosz_id` int default null,
+foreign key (`kategoria_id`) references `kategorie`(`id`),
+foreign key (`kosz_id`) references `kosze`(`id`)
+);
+
+create table `autorzy_to_ksiazki` (
+`ksiazka_id` int not null,
+`autor_id` int not null,
+primary key (`ksiazka_id`, `autor_id`),
+foreign key (`ksiazka_id`) references `ksiazki` (`id`),
+foreign key (`autor_id`) references `autorzy` (`id`)
+);
+
+INSERT INTO `kategorie` VALUES (1, 'Literatura polska');
+INSERT INTO `kategorie` VALUES (2, 'Literatura zagraniczna');
+INSERT INTO `ksiazki`(`nazwa`,`wydawnictwo`,`cena`,`kategoria_id`) VALUES ( 'Hamlet', 'AAA', 6.5, 2);
+INSERT INTO `ksiazki`(`nazwa`,`wydawnictwo`,`cena`,`kategoria_id`) VALUES ('Makbet', 'AAA', 6.8, 2);
+INSERT INTO `ksiazki`(`nazwa`,`wydawnictwo`,`cena`,`kategoria_id`) VALUES ('Potop', 'BBB', 18.4, 1);
+INSERT INTO `ksiazki`(`nazwa`,`wydawnictwo`,`cena`,`kategoria_id`) VALUES ('Quo vadis', 'BBB', 17.99, 1);
+INSERT INTO `ksiazki`(`nazwa`,`wydawnictwo`,`cena`,`kategoria_id`) VALUES ('Pan Tadeusz', 'CCC', 13.78, 1);
+INSERT INTO `ksiazki`(`nazwa`,`wydawnictwo`,`cena`,`kategoria_id`) VALUES ('Nad Niemnem', 'CCC', 15.45, 1);
+INSERT INTO `autorzy` (`imie` , `nazwisko`) VALUES ('William', 'Shakespeare'), ('Henryk', 'Sienkiewicz'), ('Adam', 'Mickiewicz'), ('Eliza', 'Orzeszkowa'), ('Jan', 'Kowalski');
+INSERT INTO `autorzy_to_ksiazki` VALUES (1, 1);
+INSERT INTO `autorzy_to_ksiazki` VALUES (1, 5);
+INSERT INTO `autorzy_to_ksiazki` VALUES (2, 1);
+INSERT INTO `autorzy_to_ksiazki` VALUES (2, 5);
+INSERT INTO `autorzy_to_ksiazki` VALUES (3, 2);
+INSERT INTO `autorzy_to_ksiazki` VALUES (4, 2);
+INSERT INTO `autorzy_to_ksiazki` VALUES (5, 3);
+INSERT INTO `autorzy_to_ksiazki` VALUES (6, 4);
+INSERT INTO `kosze` (`id`) VALUES (1);
+
+SELECT * FROM autorzy_to_ksiazki JOIN autorzy ON autorzy_to_ksiazki.autor_id=autorzy.id JOIN ksiazki ON autorzy_to_ksiazki.ksiazka_id=ksiazki.id;
+
+CREATE TABLE users (
+username VARCHAR(25) NOT NULL,
+password VARCHAR(60) NOT NULL,
+enabled boolean NOT NULL DEFAULT TRUE,
+PRIMARY KEY (username)
+);
+
+CREATE TABLE authorities (
+username varchar(50) NOT NULL,
+authority varchar(50) NOT NULL,
+UNIQUE KEY `authorieties_idx_1` (`username`, `authority`),
+CONSTRAINT `authorities_ibfk_1`
+foreign key (`username`)
+REFERENCES `users` (`username`)
+);
+
+INSERT INTO users (username, password, enabled) VALUES ('lukasz', 'lukasz123', TRUE);
+
+INSERT INTO authorities values ('lukasz','ROLE_USER');
+INSERT INTO authorities values ('lukasz','ROLE_ADMIN');
+
+INSERT INTO users (username, password, enabled) VALUES ('admin', 'admin', TRUE);
+
+INSERT INTO authorities values ('admin','ROLE_USER');
+INSERT INTO authorities values ('admin','ROLE_ADMIN');
+
+INSERT INTO users (username, password, enabled) VALUES
+('dawid', '$2a$10$BAk3VHQkqMOqo7x45hIrJ.w4BguXIX2jGIJnKl.Pi4sIuTNk8BgF6', TRUE);
+
+INSERT INTO authorities values ('dawid','ROLE_USER');
+INSERT INTO authorities values ('dawid','ROLE_ADMIN');
+
+INSERT INTO users (username, password, enabled) VALUES ('user', 'user', TRUE);
+
+INSERT INTO authorities values ('user','ROLE_USER');
+
+
+show columns from users;

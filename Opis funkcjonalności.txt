@@ -1,0 +1,4 @@
+Osoba z usprawieniami admina może wyświetlać, edytować, dodawać i usuwać książki,
+a także przypisywa do nich kategorie i autorów. 
+Administrator może także wyświetlać, dodawać i usuwać kategorie oraz autorów. 
+Osoba z usprawieniami usera może wyświetlać książki.
